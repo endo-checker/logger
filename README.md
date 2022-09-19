@@ -1,4 +1,4 @@
-# Patient gRPC microserverice #
+# Logger gRPC microserverice #
 
 This application uses `gRPC` and `proto` to send user data to a database (mongoDB). <br/>
 This uses CRUD functions. <br />
