@@ -36,7 +36,7 @@ func (s Store) QueryLog(qr *pb.QueryRequest, md metadata.MD) ([]*pb.Log, int64, 
 	opt := options.FindOptions{
 		Skip:  &qr.Offset,
 		Limit: &qr.Limit,
-		// Sort:  bson.M{"medicaldetails.risk": -1},
+		Sort:  bson.M{"date": -1},
 	}
 
 	ctx := context.Background()
