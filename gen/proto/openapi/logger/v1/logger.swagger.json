@@ -1,0 +1,372 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "logger/v1/logger.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "LoggerService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1": {
+      "get": {
+        "summary": "quering patients.",
+        "operationId": "LoggerService_Query",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1QueryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "searchText",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "LoggerService"
+        ]
+      },
+      "post": {
+        "summary": "adding new logs.",
+        "operationId": "LoggerService_Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "LoggerService"
+        ]
+      }
+    },
+    "/v1/{id}": {
+      "get": {
+        "summary": "retrieving patient.",
+        "operationId": "LoggerService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "LoggerService"
+        ]
+      }
+    },
+    "/v1/{log.id}": {
+      "put": {
+        "summary": "UpdateRequest is used to specify a patient to update.",
+        "operationId": "LoggerService_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "log.id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "log": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string",
+                      "format": "int64"
+                    },
+                    "dailySummary": {
+                      "$ref": "#/definitions/v1DailySummary"
+                    }
+                  },
+                  "title": "patient represents a platform patient uploaded by a specialist"
+                },
+                "updateMask": {
+                  "type": "string"
+                }
+              },
+              "description": "Update is used to specify a patient to update."
+            }
+          }
+        ],
+        "tags": [
+          "LoggerService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateRequest": {
+      "type": "object",
+      "properties": {
+        "log": {
+          "$ref": "#/definitions/v1Log"
+        }
+      },
+      "description": "Create contains information needed to create a new patient."
+    },
+    "v1CreateResponse": {
+      "type": "object",
+      "properties": {
+        "log": {
+          "$ref": "#/definitions/v1Log"
+        }
+      },
+      "description": "CreateResponse returns the newly created patient for the Create method."
+    },
+    "v1DailySummary": {
+      "type": "object",
+      "properties": {
+        "mood": {
+          "$ref": "#/definitions/v1Mood"
+        },
+        "symptoms": {
+          "$ref": "#/definitions/v1Symptoms"
+        }
+      },
+      "title": "daily summary of the patient"
+    },
+    "v1GetResponse": {
+      "type": "object",
+      "properties": {
+        "log": {
+          "$ref": "#/definitions/v1Log"
+        }
+      },
+      "title": "GetResponse returns an patient based on the patient id"
+    },
+    "v1Log": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "dailySummary": {
+          "$ref": "#/definitions/v1DailySummary"
+        }
+      },
+      "title": "patient represents a platform patient uploaded by a specialist"
+    },
+    "v1Mood": {
+      "type": "object",
+      "properties": {
+        "fine": {
+          "type": "boolean"
+        },
+        "happy": {
+          "type": "boolean"
+        },
+        "energetic": {
+          "type": "boolean"
+        },
+        "motivated": {
+          "type": "boolean"
+        },
+        "emotional": {
+          "type": "boolean"
+        },
+        "overwhelmed": {
+          "type": "boolean"
+        },
+        "irritatable": {
+          "type": "boolean"
+        },
+        "frustrated": {
+          "type": "boolean"
+        }
+      },
+      "title": "mood patient experiences daily"
+    },
+    "v1QueryResponse": {
+      "type": "object",
+      "properties": {
+        "cursor": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Log"
+          }
+        },
+        "matches": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "QueryResponse returns a paged list of patients"
+    },
+    "v1Symptoms": {
+      "type": "object",
+      "properties": {
+        "acne": {
+          "type": "boolean"
+        },
+        "bloating": {
+          "type": "boolean"
+        },
+        "bodyAches": {
+          "type": "boolean"
+        },
+        "constipation": {
+          "type": "boolean"
+        },
+        "cramps": {
+          "type": "boolean"
+        },
+        "cravings": {
+          "type": "boolean"
+        },
+        "diarrea": {
+          "type": "boolean"
+        },
+        "fatigue": {
+          "type": "boolean"
+        },
+        "headaches": {
+          "type": "boolean"
+        },
+        "nausea": {
+          "type": "boolean"
+        },
+        "insomnia": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "type": "boolean"
+        }
+      },
+      "title": "symptoms patient experiences daily"
+    },
+    "v1UpdateResponse": {
+      "type": "object",
+      "properties": {
+        "log": {
+          "$ref": "#/definitions/v1Log"
+        }
+      },
+      "title": "UpdateResponse returns an updated patient based on the one provided"
+    }
+  }
+}

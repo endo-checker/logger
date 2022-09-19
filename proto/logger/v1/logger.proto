@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package logger.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "validate/validate.proto";
+
+// logs is 
+service LoggerService {
+  // adding new logs.
+  rpc Create(CreateRequest) returns (CreateResponse){
+     option (google.api.http) = {
+      post : "/v1"
+      body : "*"
+    };
+    // option (event.subscription) = {
+    //   pubsub_name : "pubsub"
+    //   topic : "patient.update"
+    //   payload : "*"
+    // };
+  };  
+
+  // quering patients.
+  rpc Query(QueryRequest) returns (QueryResponse){
+     option (google.api.http) = {
+      get : "/v1"
+    };
+  };
+
+  // retrieving patient.
+  rpc Get(GetRequest) returns (GetResponse){
+     option (google.api.http) = {
+      get : "/v1/{id}"
+     
+    };
+  };
+
+  // UpdateRequest is used to specify a patient to update.
+  rpc Update(UpdateRequest) returns (UpdateResponse){
+     option (google.api.http) = {
+        put : "/v1/{log.id}"
+        body : "*"
+    };
+  };
+}
+
+// Create contains information needed to create a new patient.
+message CreateRequest  { Log log = 1[ (validate.rules).message.required = true ]; }
+// CreateResponse returns the newly created patient for the Create method.
+message CreateResponse { 
+  Log log = 1;
+ }
+
+// Query is used to specify the patient to retrieve.
+message QueryRequest  { 
+  int64 offset = 1 [ (validate.rules).int64.gte = 0 ];
+  int64 limit = 2 [ (validate.rules).int64.gte = 0 ];
+  string search_text = 3; 
+}
+// QueryResponse returns a paged list of patients
+message QueryResponse  { 
+  repeated Log cursor = 1;
+  int64 matches = 2;
+}
+
+// Get is used to specify the patient to retrieve.
+message GetRequest {  string id = 1 [ (validate.rules).string.uuid = true ]; }
+// GetResponse returns an patient based on the patient id
+message GetResponse { Log log = 1; }
+
+// Update is used to specify a patient to update.
+message UpdateRequest  { 
+  Log log = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}
+// UpdateResponse returns an updated patient based on the one provided
+message UpdateResponse { Log log = 1; }
+
+// patient represents a platform patient uploaded by a specialist
+message Log {
+  string id = 1 [ (validate.rules).string.uuid = true ];
+  string name = 2 [ (validate.rules).string.min_len = 1 ];
+  int64 date = 4; 
+  DailySummary  daily_summary = 5; 
+}
+
+// daily summary of the patient
+message DailySummary {
+  Mood mood = 1;
+  Symptoms symptoms = 2;
+}
+// symptoms patient experiences daily
+message Symptoms {
+  bool acne = 1;
+  bool bloating = 2;
+  bool body_aches = 3;
+  bool constipation = 4;
+  bool cramps = 5;
+  bool cravings = 6;
+  bool diarrea = 7;
+  bool fatigue = 8;
+  bool headaches = 9;
+  bool nausea = 10;
+  bool insomnia = 11;
+  bool sensitivity = 12;
+}
+// mood patient experiences daily
+message Mood {
+  bool fine = 1;
+  bool happy = 2;
+  bool energetic = 3;
+  bool motivated = 4;
+  bool emotional = 5;
+  bool overwhelmed = 6;
+  bool irritatable = 7;
+  bool frustrated = 8;
+}
