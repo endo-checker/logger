@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,6 +17,8 @@ type Storer interface {
 	AddLog(u *pb.Log, md metadata.MD) error
 	QueryLog(qr *pb.QueryRequest, md metadata.MD) ([]*pb.Log, int64, error)
 	GetLog(id string, md metadata.MD) (*pb.Log, error)
+	UpdateLog(id string, md metadata.MD, l *pb.Log) error
+	DeleteLog(id string, md metadata.MD) error
 }
 
 func (s Store) AddLog(logs *pb.Log, md metadata.MD) error {
@@ -29,8 +32,8 @@ func (s Store) AddLog(logs *pb.Log, md metadata.MD) error {
 func (s Store) QueryLog(qr *pb.QueryRequest, md metadata.MD) ([]*pb.Log, int64, error) {
 	filter := bson.M{}
 
-	if qr.SearchText != "" {
-		filter = bson.M{"$text": bson.M{"$search": `"` + qr.SearchText + `"`}}
+	if qr.PatientId != "" {
+		filter = bson.M{"$text": bson.M{"$search": `"` + qr.PatientId + `"`}}
 	}
 
 	opt := options.FindOptions{
@@ -69,4 +72,21 @@ func (s Store) GetLog(id string, md metadata.MD) (*pb.Log, error) {
 	}
 
 	return &l, nil
+}
+
+func (s Store) UpdateLog(id string, md metadata.MD, l *pb.Log) error {
+	insertResult, err := s.locaColl.ReplaceOne(context.Background(), bson.M{"id": id}, l)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("\nInserted a Single Document: %v\n", insertResult)
+
+	return err
+}
+
+func (s Store) DeleteLog(id string, md metadata.MD) error {
+	if _, err := s.locaColl.DeleteOne(context.Background(), bson.M{"id": id}); err != nil {
+		return err
+	}
+	return nil
 }

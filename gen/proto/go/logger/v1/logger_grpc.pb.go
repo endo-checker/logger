@@ -26,6 +26,8 @@ type LoggerServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	// UpdateRequest is used to specify a patient to update.
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
+	// Delete removes logs
+	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 }
 
 type loggerServiceClient struct {
@@ -72,6 +74,15 @@ func (c *loggerServiceClient) Update(ctx context.Context, in *UpdateRequest, opt
 	return out, nil
 }
 
+func (c *loggerServiceClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+	out := new(DeleteResponse)
+	err := c.cc.Invoke(ctx, "/logger.v1.LoggerService/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LoggerServiceServer is the server API for LoggerService service.
 // All implementations must embed UnimplementedLoggerServiceServer
 // for forward compatibility
@@ -84,6 +95,8 @@ type LoggerServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	// UpdateRequest is used to specify a patient to update.
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
+	// Delete removes logs
+	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
 	mustEmbedUnimplementedLoggerServiceServer()
 }
 
@@ -102,6 +115,9 @@ func (UnimplementedLoggerServiceServer) Get(context.Context, *GetRequest) (*GetR
 }
 func (UnimplementedLoggerServiceServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedLoggerServiceServer) Delete(context.Context, *DeleteRequest) (*DeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedLoggerServiceServer) mustEmbedUnimplementedLoggerServiceServer() {}
 
@@ -188,6 +204,24 @@ func _LoggerService_Update_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LoggerService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoggerServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/logger.v1.LoggerService/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LoggerServiceServer).Delete(ctx, req.(*DeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LoggerService_ServiceDesc is the grpc.ServiceDesc for LoggerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -210,6 +244,10 @@ var LoggerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Update",
 			Handler:    _LoggerService_Update_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _LoggerService_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

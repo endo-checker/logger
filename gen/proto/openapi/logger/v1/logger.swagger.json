@@ -50,7 +50,7 @@
             "format": "int64"
           },
           {
-            "name": "searchText",
+            "name": "patientId",
             "in": "query",
             "required": false,
             "type": "string"
@@ -121,6 +121,35 @@
         "tags": [
           "LoggerService"
         ]
+      },
+      "delete": {
+        "summary": "Delete removes logs",
+        "operationId": "LoggerService_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "LoggerService"
+        ]
       }
     },
     "/v1/{log.id}": {
@@ -158,6 +187,9 @@
                 "log": {
                   "type": "object",
                   "properties": {
+                    "patientId": {
+                      "type": "string"
+                    },
                     "name": {
                       "type": "string"
                     },
@@ -167,6 +199,9 @@
                     },
                     "dailySummary": {
                       "$ref": "#/definitions/v1DailySummary"
+                    },
+                    "checked": {
+                      "type": "boolean"
                     }
                   },
                   "title": "patient represents a platform patient uploaded by a specialist"
@@ -243,6 +278,10 @@
       },
       "title": "daily summary of the patient"
     },
+    "v1DeleteResponse": {
+      "type": "object",
+      "description": "DeleteResponse returns an empty response and can be ignored."
+    },
     "v1GetResponse": {
       "type": "object",
       "properties": {
@@ -258,6 +297,9 @@
         "id": {
           "type": "string"
         },
+        "patientId": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -267,6 +309,9 @@
         },
         "dailySummary": {
           "$ref": "#/definitions/v1DailySummary"
+        },
+        "checked": {
+          "type": "boolean"
         }
       },
       "title": "patient represents a platform patient uploaded by a specialist"

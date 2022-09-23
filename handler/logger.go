@@ -5,6 +5,7 @@ import (
 	"time"
 
 	dapr "github.com/dapr/go-sdk/client"
+	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -26,6 +27,7 @@ func (log LoggerServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.
 	}
 
 	logs := req.Log
+	logs.Id = uuid.NewString()
 	logs.Date = time.Now().Unix()
 
 	if err := log.Store.AddLog(logs, md); err != nil {
@@ -63,4 +65,33 @@ func (log LoggerServer) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetRes
 	}
 
 	return &pb.GetResponse{Log: ptnt}, nil
+}
+
+func (log LoggerServer) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return &pb.UpdateResponse{}, status.Errorf(codes.Aborted, "%s", "no incoming context")
+	}
+
+	l := req.Log
+	id := l.Id
+
+	if err := log.Store.UpdateLog(id, md, l); err != nil {
+		return &pb.UpdateResponse{}, status.Errorf(codes.Aborted, "%v", err)
+	}
+
+	return &pb.UpdateResponse{Log: l}, nil
+}
+
+func (log LoggerServer) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteResponse, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return &pb.DeleteResponse{}, status.Errorf(codes.Aborted, "%s", "no incoming context")
+	}
+
+	if err := log.Store.DeleteLog(req.Id, md); err != nil {
+		return &pb.DeleteResponse{}, status.Errorf(codes.Aborted, "%v", err)
+	}
+
+	return &pb.DeleteResponse{}, nil
 }

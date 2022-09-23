@@ -45,6 +45,13 @@ service LoggerService {
         body : "*"
     };
   };
+
+    // Delete removes logs
+  rpc Delete(DeleteRequest) returns (DeleteResponse){
+     option (google.api.http) = {
+       delete : "/v1/{id}"
+    };
+  };
 }
 
 // Create contains information needed to create a new patient.
@@ -58,7 +65,7 @@ message CreateResponse {
 message QueryRequest  { 
   int64 offset = 1 [ (validate.rules).int64.gte = 0 ];
   int64 limit = 2 [ (validate.rules).int64.gte = 0 ];
-  string search_text = 3; 
+  string patient_id = 3; 
 }
 // QueryResponse returns a paged list of patients
 message QueryResponse  { 
@@ -79,12 +86,20 @@ message UpdateRequest  {
 // UpdateResponse returns an updated patient based on the one provided
 message UpdateResponse { Log log = 1; }
 
+
+// Delete contains information needed to remove a log
+message DeleteRequest { string id = 1 [ (validate.rules).string.uuid = true ];}
+// DeleteResponse returns an empty response and can be ignored.
+message DeleteResponse {}
+
 // patient represents a platform patient uploaded by a specialist
 message Log {
   string id = 1 [ (validate.rules).string.uuid = true ];
-  string name = 2 [ (validate.rules).string.min_len = 1 ];
+  string patient_id = 2 [ (validate.rules).string.uuid = true ];
+  string name = 3 [ (validate.rules).string.min_len = 1 ];
   int64 date = 4; 
   DailySummary  daily_summary = 5; 
+  bool checked = 6;
 }
 
 // daily summary of the patient

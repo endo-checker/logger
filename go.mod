@@ -38,14 +38,14 @@ require (
 )
 
 require (
-	github.com/dapr/dapr v1.8.4
+	github.com/dapr/dapr v1.8.4 // indirect
 	github.com/dapr/go-sdk v1.5.0
 	github.com/endo-checker/common v0.0.0-20220916031018-424f11755b72
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0
-	github.com/spf13/viper v1.13.0
+	github.com/spf13/viper v1.13.0 // indirect
 	go.mongodb.org/mongo-driver v1.10.2
-	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
+	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e
 	golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d // indirect
 	golang.org/x/text v0.3.7 // indirect
 )
