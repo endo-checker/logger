@@ -1409,6 +1409,8 @@ func (m *Log) validate(all bool) error {
 
 	// no validation rules for Checked
 
+	// no validation rules for AdditionalNotes
+
 	if len(errors) > 0 {
 		return LogMultiError(errors)
 	}

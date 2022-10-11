@@ -202,6 +202,9 @@
                     },
                     "checked": {
                       "type": "boolean"
+                    },
+                    "additionalNotes": {
+                      "type": "string"
                     }
                   },
                   "title": "patient represents a platform patient uploaded by a specialist"
@@ -312,6 +315,9 @@
         },
         "checked": {
           "type": "boolean"
+        },
+        "additionalNotes": {
+          "type": "string"
         }
       },
       "title": "patient represents a platform patient uploaded by a specialist"
