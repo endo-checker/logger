@@ -41,7 +41,7 @@ service LoggerService {
   // UpdateRequest is used to specify a patient to update.
   rpc Update(UpdateRequest) returns (UpdateResponse){
      option (google.api.http) = {
-        put : "/v1/{log.id}"
+        patch : "/v1/{log.id}"
         body : "*"
     };
   };

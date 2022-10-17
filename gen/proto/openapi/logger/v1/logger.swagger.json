@@ -153,7 +153,7 @@
       }
     },
     "/v1/{log.id}": {
-      "put": {
+      "patch": {
         "summary": "UpdateRequest is used to specify a patient to update.",
         "operationId": "LoggerService_Update",
         "responses": {
