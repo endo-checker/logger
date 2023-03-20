@@ -42,7 +42,7 @@ func (log LoggerServer) Query(ctx context.Context, req *connect.Request[pb.Query
 	reqMsg := req.Msg
 
 	if reqMsg.LogId != "" {
-		pattern, err := regexp.Compile(`^[a-zA-Z@. ]+$`)
+		pattern, err := regexp.Compile(`^[a-zA-Z0-9-]+$`)
 		if err != nil {
 			return nil, connect.NewError(connect.CodeAborted, err)
 		}

@@ -27,7 +27,7 @@ func (s LoggerStore) Fetch(ctx context.Context, qr *loggerv1.QueryRequest) ([]*l
 	if qr.LogId != "" {
 		filter = bson.M{"$and": bson.A{filter,
 			bson.M{"$or": bson.A{
-				bson.M{"id": primitive.Regex{Pattern: qr.LogId, Options: "i"}},
+				bson.M{"logid": primitive.Regex{Pattern: qr.LogId, Options: "i"}},
 			}},
 		}}
 	}
