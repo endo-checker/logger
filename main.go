@@ -29,6 +29,5 @@ func main() {
 	srvr := sv.Server{
 		ServeMux: &http.ServeMux{},
 	}
-
 	sv.Server.ConnectServer(srvr, path, hndlr, port)
 }
