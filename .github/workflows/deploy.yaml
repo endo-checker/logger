@@ -1,0 +1,24 @@
+# Builds a docker image, publishes it to GitHub's docker repo (ghcr.io),
+# and subsequently deploys it as a Container App revision.
+# The workflow will only run if commit message contains [tag:patch|minor|major]
+
+name: Deploy 
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    uses: endo-checker/github-tools/.github/workflows/build-go.yaml@main
+    secrets: inherit
+
+  Development:
+    needs: build
+    uses: endo-checker/github-tools/.github/workflows/deploy-go.yaml@main
+    secrets: inherit
+    with:
+      environment: Development
+      tag: ${{ needs.build.outputs.tag }}
