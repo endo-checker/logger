@@ -16,50 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1": {
-      "get": {
-        "summary": "quering patients.",
-        "operationId": "LoggerService_Query",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1QueryResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "LoggerService"
-        ]
-      },
+    "/Create": {
       "post": {
         "summary": "adding new logs.",
         "operationId": "LoggerService_Create",
@@ -80,6 +37,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "Create contains information needed to create a new log.",
             "in": "body",
             "required": true,
             "schema": {
@@ -92,37 +50,8 @@
         ]
       }
     },
-    "/v1/{id}": {
-      "get": {
-        "summary": "retrieving patient.",
-        "operationId": "LoggerService_Get",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "LoggerService"
-        ]
-      },
-      "delete": {
+    "/Delete": {
+      "post": {
         "summary": "Delete removes logs",
         "operationId": "LoggerService_Delete",
         "responses": {
@@ -141,10 +70,12 @@
         },
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/v1DeleteRequest"
+            }
           }
         ],
         "tags": [
@@ -152,9 +83,77 @@
         ]
       }
     },
-    "/v1/{log.id}": {
-      "patch": {
-        "summary": "UpdateRequest is used to specify a patient to update.",
+    "/Get": {
+      "post": {
+        "summary": "retrieving log.",
+        "operationId": "LoggerService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "Get is used to specify the log to retrieve.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "LoggerService"
+        ]
+      }
+    },
+    "/Query": {
+      "post": {
+        "summary": "quering logs.",
+        "operationId": "LoggerService_Query",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1QueryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "Query is used to specify the log to retrieve.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1QueryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "LoggerService"
+        ]
+      }
+    },
+    "/Update": {
+      "post": {
+        "summary": "UpdateRequest is used to specify a log to update.",
         "operationId": "LoggerService_Update",
         "responses": {
           "200": {
@@ -172,48 +171,12 @@
         },
         "parameters": [
           {
-            "name": "log.id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "body",
+            "description": "Update is used to specify a log to update.",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "log": {
-                  "type": "object",
-                  "properties": {
-                    "patientId": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "date": {
-                      "type": "string",
-                      "format": "int64"
-                    },
-                    "dailySummary": {
-                      "$ref": "#/definitions/v1DailySummary"
-                    },
-                    "checked": {
-                      "type": "boolean"
-                    },
-                    "additionalNotes": {
-                      "type": "string"
-                    }
-                  },
-                  "title": "patient represents a platform patient uploaded by a specialist"
-                },
-                "updateMask": {
-                  "type": "string"
-                }
-              },
-              "description": "Update is used to specify a patient to update."
+              "$ref": "#/definitions/v1UpdateRequest"
             }
           }
         ],
@@ -258,7 +221,7 @@
           "$ref": "#/definitions/v1Log"
         }
       },
-      "description": "Create contains information needed to create a new patient."
+      "description": "Create contains information needed to create a new log."
     },
     "v1CreateResponse": {
       "type": "object",
@@ -267,7 +230,7 @@
           "$ref": "#/definitions/v1Log"
         }
       },
-      "description": "CreateResponse returns the newly created patient for the Create method."
+      "description": "CreateResponse returns the newly created log for the Create method."
     },
     "v1DailySummary": {
       "type": "object",
@@ -279,11 +242,29 @@
           "$ref": "#/definitions/v1Symptoms"
         }
       },
-      "title": "daily summary of the patient"
+      "title": "daily summary of the log"
+    },
+    "v1DeleteRequest": {
+      "type": "object",
+      "properties": {
+        "logId": {
+          "type": "string"
+        }
+      },
+      "title": "Delete contains information needed to remove a log"
     },
     "v1DeleteResponse": {
       "type": "object",
       "description": "DeleteResponse returns an empty response and can be ignored."
+    },
+    "v1GetRequest": {
+      "type": "object",
+      "properties": {
+        "logId": {
+          "type": "string"
+        }
+      },
+      "description": "Get is used to specify the log to retrieve."
     },
     "v1GetResponse": {
       "type": "object",
@@ -292,7 +273,7 @@
           "$ref": "#/definitions/v1Log"
         }
       },
-      "title": "GetResponse returns an patient based on the patient id"
+      "title": "GetResponse returns an log based on the log id"
     },
     "v1Log": {
       "type": "object",
@@ -300,7 +281,7 @@
         "id": {
           "type": "string"
         },
-        "patientId": {
+        "logId": {
           "type": "string"
         },
         "name": {
@@ -320,7 +301,7 @@
           "type": "string"
         }
       },
-      "title": "patient represents a platform patient uploaded by a specialist"
+      "title": "log represents a platform log uploaded by a specialist"
     },
     "v1Mood": {
       "type": "object",
@@ -350,7 +331,24 @@
           "type": "boolean"
         }
       },
-      "title": "mood patient experiences daily"
+      "title": "mood log experiences daily"
+    },
+    "v1QueryRequest": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "string",
+          "format": "int64"
+        },
+        "limit": {
+          "type": "string",
+          "format": "int64"
+        },
+        "logId": {
+          "type": "string"
+        }
+      },
+      "description": "Query is used to specify the log to retrieve."
     },
     "v1QueryResponse": {
       "type": "object",
@@ -366,7 +364,7 @@
           "format": "int64"
         }
       },
-      "title": "QueryResponse returns a paged list of patients"
+      "title": "QueryResponse returns a paged list of logs"
     },
     "v1Symptoms": {
       "type": "object",
@@ -408,7 +406,22 @@
           "type": "boolean"
         }
       },
-      "title": "symptoms patient experiences daily"
+      "title": "symptoms log experiences daily"
+    },
+    "v1UpdateRequest": {
+      "type": "object",
+      "properties": {
+        "logId": {
+          "type": "string"
+        },
+        "log": {
+          "$ref": "#/definitions/v1Log"
+        },
+        "updateMask": {
+          "type": "string"
+        }
+      },
+      "description": "Update is used to specify a log to update."
     },
     "v1UpdateResponse": {
       "type": "object",
@@ -417,7 +430,7 @@
           "$ref": "#/definitions/v1Log"
         }
       },
-      "title": "UpdateResponse returns an updated patient based on the one provided"
+      "title": "UpdateResponse returns an updated log based on the one provided"
     }
   }
 }

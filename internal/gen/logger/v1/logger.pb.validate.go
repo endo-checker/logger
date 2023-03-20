@@ -351,7 +351,7 @@ func (m *QueryRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for PatientId
+	// no validation rules for LogId
 
 	if len(errors) > 0 {
 		return QueryRequestMultiError(errors)
@@ -588,9 +588,9 @@ func (m *GetRequest) validate(all bool) error {
 
 	var errors []error
 
-	if err := m._validateUuid(m.GetId()); err != nil {
+	if err := m._validateUuid(m.GetLogId()); err != nil {
 		err = GetRequestValidationError{
-			field:  "Id",
+			field:  "LogId",
 			reason: "value must be a valid UUID",
 			cause:  err,
 		}
@@ -835,6 +835,18 @@ func (m *UpdateRequest) validate(all bool) error {
 
 	var errors []error
 
+	if err := m._validateUuid(m.GetLogId()); err != nil {
+		err = UpdateRequestValidationError{
+			field:  "LogId",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if all {
 		switch v := interface{}(m.GetLog()).(type) {
 		case interface{ ValidateAll() error }:
@@ -895,6 +907,14 @@ func (m *UpdateRequest) validate(all bool) error {
 
 	if len(errors) > 0 {
 		return UpdateRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+func (m *UpdateRequest) _validateUuid(uuid string) error {
+	if matched := _logger_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
 	}
 
 	return nil
@@ -1122,9 +1142,9 @@ func (m *DeleteRequest) validate(all bool) error {
 
 	var errors []error
 
-	if err := m._validateUuid(m.GetId()); err != nil {
+	if err := m._validateUuid(m.GetLogId()); err != nil {
 		err = DeleteRequestValidationError{
-			field:  "Id",
+			field:  "LogId",
 			reason: "value must be a valid UUID",
 			cause:  err,
 		}
@@ -1353,9 +1373,9 @@ func (m *Log) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if err := m._validateUuid(m.GetPatientId()); err != nil {
+	if err := m._validateUuid(m.GetLogId()); err != nil {
 		err = LogValidationError{
-			field:  "PatientId",
+			field:  "LogId",
 			reason: "value must be a valid UUID",
 			cause:  err,
 		}

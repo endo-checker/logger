@@ -13,35 +13,36 @@ service LoggerService {
   // adding new logs.
   rpc Create(CreateRequest) returns (CreateResponse){
      option (google.api.http) = {
-      post : "/v1"
+      post : "/Create"
       body : "*"
     };
     // option (event.subscription) = {
     //   pubsub_name : "pubsub"
-    //   topic : "patient.update"
+    //   topic : "log.update"
     //   payload : "*"
     // };
   };  
 
-  // quering patients.
+  // quering logs.
   rpc Query(QueryRequest) returns (QueryResponse){
      option (google.api.http) = {
-      get : "/v1"
+      post : "/Query"
+      body : "*"
     };
   };
 
-  // retrieving patient.
+  // retrieving log.
   rpc Get(GetRequest) returns (GetResponse){
      option (google.api.http) = {
-      get : "/v1/{id}"
-     
+      post : "/Get"
+      body: "*"
     };
   };
 
-  // UpdateRequest is used to specify a patient to update.
+  // UpdateRequest is used to specify a log to update.
   rpc Update(UpdateRequest) returns (UpdateResponse){
      option (google.api.http) = {
-        patch : "/v1/{log.id}"
+        post : "/Update"
         body : "*"
     };
   };
@@ -49,53 +50,55 @@ service LoggerService {
     // Delete removes logs
   rpc Delete(DeleteRequest) returns (DeleteResponse){
      option (google.api.http) = {
-       delete : "/v1/{id}"
+       post : "/Delete"
+       body : "*"
     };
   };
 }
 
-// Create contains information needed to create a new patient.
+// Create contains information needed to create a new log.
 message CreateRequest  { Log log = 1[ (validate.rules).message.required = true ]; }
-// CreateResponse returns the newly created patient for the Create method.
+// CreateResponse returns the newly created log for the Create method.
 message CreateResponse { 
   Log log = 1;
  }
 
-// Query is used to specify the patient to retrieve.
+// Query is used to specify the log to retrieve.
 message QueryRequest  { 
   int64 offset = 1 [ (validate.rules).int64.gte = 0 ];
   int64 limit = 2 [ (validate.rules).int64.gte = 0 ];
-  string patient_id = 3; 
+  string log_id = 3; 
 }
-// QueryResponse returns a paged list of patients
+// QueryResponse returns a paged list of logs
 message QueryResponse  { 
   repeated Log cursor = 1;
   int64 matches = 2;
 }
 
-// Get is used to specify the patient to retrieve.
-message GetRequest {  string id = 1 [ (validate.rules).string.uuid = true ]; }
-// GetResponse returns an patient based on the patient id
+// Get is used to specify the log to retrieve.
+message GetRequest {  string log_id = 1 [ (validate.rules).string.uuid = true ]; }
+// GetResponse returns an log based on the log id
 message GetResponse { Log log = 1; }
 
-// Update is used to specify a patient to update.
+// Update is used to specify a log to update.
 message UpdateRequest  { 
-  Log log = 1;
-  google.protobuf.FieldMask update_mask = 2;
+  string log_id = 1 [ (validate.rules).string.uuid = true ];
+  Log log = 2;
+  google.protobuf.FieldMask update_mask = 3;
 }
-// UpdateResponse returns an updated patient based on the one provided
+// UpdateResponse returns an updated log based on the one provided
 message UpdateResponse { Log log = 1; }
 
 
 // Delete contains information needed to remove a log
-message DeleteRequest { string id = 1 [ (validate.rules).string.uuid = true ];}
+message DeleteRequest { string log_id = 1 [ (validate.rules).string.uuid = true ];}
 // DeleteResponse returns an empty response and can be ignored.
 message DeleteResponse {}
 
-// patient represents a platform patient uploaded by a specialist
+// log represents a platform log uploaded by a specialist
 message Log {
   string id = 1 [ (validate.rules).string.uuid = true ];
-  string patient_id = 2 [ (validate.rules).string.uuid = true ];
+  string log_id = 2 [ (validate.rules).string.uuid = true ];
   string name = 3 [ (validate.rules).string.min_len = 1 ];
   int64 date = 4; 
   DailySummary  daily_summary = 5; 
@@ -103,12 +106,12 @@ message Log {
   string additional_notes = 7;
 }
 
-// daily summary of the patient
+// daily summary of the log
 message DailySummary {
   Mood mood = 1;
   Symptoms symptoms = 2;
 }
-// symptoms patient experiences daily
+// symptoms log experiences daily
 message Symptoms {
   bool acne = 1;
   bool bloating = 2;
@@ -123,7 +126,7 @@ message Symptoms {
   bool insomnia = 11;
   bool sensitivity = 12;
 }
-// mood patient experiences daily
+// mood log experiences daily
 message Mood {
   bool fine = 1;
   bool happy = 2;
